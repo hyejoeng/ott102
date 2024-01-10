@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ott102/persentation/provider/main_tab_provider.dart';
 import 'package:ott102/persentation/view/screens/main_tab_screen.dart';
-import 'package:ott102/repository/movie_repository.dart';
+
+import 'data/repository/movie_repository.dart';
 
 void main() {
   runApp(MyApp());

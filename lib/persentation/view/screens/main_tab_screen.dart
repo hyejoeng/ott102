@@ -36,11 +36,11 @@ class _MainTabScreenState extends State<MainTabScreen> {
   @override
   void initState() {
     super.initState();
-    widget.mainTabProvider.mainTabController = PageController();
+    // widget.mainTabProvider.mainTabController = PageController();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.mainTabProvider.updateGenreList();
-      widget.mainTabProvider.updateTopRatedMovieList();
+      // widget.mainTabProvider.updateTopRatedMovieList();
       widget.mainTabProvider.addListener(() => setState(() {}));
     });
   }

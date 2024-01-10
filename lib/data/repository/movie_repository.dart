@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:ott102/data/model/genre_model.dart';
 import 'package:http/http.dart';
 import 'package:ott102/data/model/now_playing_movie.dart';
-import '../data/model/top_rated_movie.dart';
+import '../model/top_rated_movie.dart';
 
 class MovieRepository {
   final _client = Client();

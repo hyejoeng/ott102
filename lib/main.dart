@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:ott102/persentation/provider/main_tab_provider.dart';
 import 'package:ott102/persentation/view/screens/main_tab_screen.dart';
+import 'package:ott102/repository/movie_repository.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final mainTabProvider = MainTabProvider(movieRepository: MovieRepository());
+
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+        primaryColor: Colors.blue,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent
       ),
-      home: MainScreen(),
+      home: MainTabScreen(mainTabProvider: mainTabProvider),
     );
   }
 }

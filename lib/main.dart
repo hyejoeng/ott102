@@ -18,11 +18,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: 'NotoSans',
         primaryColor: Colors.blue,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent
       ),
-      home: MainTabScreen(mainTabProvider: mainTabProvider),
+      home: MainTabScreen(mainTabProvider: mainTabProvider,),
     );
   }
 }

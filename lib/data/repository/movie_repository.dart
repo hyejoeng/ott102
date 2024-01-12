@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:ott102/data/model/genre_model.dart';
 import 'package:http/http.dart';
-import 'package:ott102/data/model/now_playing_movie.dart';
-import '../model/top_rated_movie.dart';
+import 'package:ott102/data/model/now_playing_model.dart';
+import 'package:ott102/data/model/upcoming_model.dart';
+import '../model/top_rated_model.dart';
 
 class MovieRepository {
   final _client = Client();
@@ -27,6 +28,7 @@ class MovieRepository {
     }
   }
 
+  // 장르 리스트
   Future<List<GenreModel>> getGenreList() async {
     final List<GenreModel> genreList = [];
     final apiUrl = Uri.https(
@@ -47,42 +49,64 @@ class MovieRepository {
     return genreList;
   }
 
-  Future<List<TopRatedMovieModel>> getTopRatedMovieList() async {
-    final List<TopRatedMovieModel> topRatedMovieList = [];
+  // 인기 영화
+  Future<List<TopRatedModel>> getTopRatedMovieList() async {
+    final List<TopRatedModel> topRatedMovieList = [];
 
     final apiUrl = Uri.https(
       _baseUrl, '/3/movie/top_rated', {'language':'ko-KR', 'region':'KR', 'page':'1'},
     );
 
     final response = await _apiCallHandling(apiUri: apiUrl, headers: headers);
-    if (response == null) {
-      return [];
-    }
+    if (response == null) return [];
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+
     for (var topRatedMovie in responseBody['results']) {
-      topRatedMovieList.add(TopRatedMovieModel.fromJson(topRatedMovie as Map<String, dynamic>));
+      topRatedMovieList.add(TopRatedModel.fromJson(topRatedMovie as Map<String, dynamic>));
     }
+
     return topRatedMovieList;
   }
 
-  Future<List<NowPlayingMovieModel>> getNowPlayingMovieList() async {
-    final List<NowPlayingMovieModel> nowPlayingMovieList = [];
+  // 방영 중인 영화
+  Future<List<NowPlayingModel>> getNowPlayingMovieList() async {
+    final List<NowPlayingModel> nowPlayingMovieList = [];
 
     final apiUrl = Uri.https(
       _baseUrl, '/3/movie/now_playing', {'language':'ko-KR', 'region':'KR', 'page':'1'},
     );
 
     final response = await _apiCallHandling(apiUri: apiUrl, headers: headers);
-    if (response == null) {
-      return [];
-    }
+    if (response == null) return [];
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+
     for (var nowPlayingMovie in responseBody['results']) {
-      nowPlayingMovieList.add(NowPlayingMovieModel.fromJson(nowPlayingMovie as Map<String, dynamic>));
+      nowPlayingMovieList.add(NowPlayingModel.fromJson(nowPlayingMovie as Map<String, dynamic>));
     }
 
     return nowPlayingMovieList;
   }
+
+  // 공개 예정
+  Future<List<UpcomingModel>> getUpcomingMovieList() async {
+    final List<UpcomingModel> upcomingMovieList = [];
+
+    final apiUrl = Uri.https(
+      _baseUrl, '/3/movie/upcoming', {'language':'ko-KR', 'region':'KR', 'page':'1'},
+    );
+
+    final response = await _apiCallHandling(apiUri: apiUrl, headers: headers);
+    if (response == null) return [];
+
+    final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+
+    for (var upcomingMovie in responseBody['results']) {
+      upcomingMovieList.add(UpcomingModel.fromJson(upcomingMovie as Map<String, dynamic>));
+    }
+
+    return upcomingMovieList;
+  }
+
 }

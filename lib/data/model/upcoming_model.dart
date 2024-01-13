@@ -7,7 +7,7 @@ class UpcomingModel {
   factory UpcomingModel.fromJson(Map<String, dynamic> json) {
     final String posterPath = 'https://image.tmdb.org/t/p/original/${json['poster_path']}';
 
-    final String releasceDate = '${json['releasce_date']} 예정';
+    final String releasceDate = '${json['release_date']} 예정';
 
     return UpcomingModel(posterPath: posterPath, releasceDate: releasceDate);
   }

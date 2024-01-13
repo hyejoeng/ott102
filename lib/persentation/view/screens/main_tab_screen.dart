@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ott102/data/repository/movie_repository.dart';
-import 'package:ott102/persentation/provider/main_tab_provider.dart';
 import 'package:ott102/persentation/utils.dart';
-import 'package:ott102/persentation/view/screens/loading.dart';
 import 'package:ott102/persentation/view/screens/tab_screen/download_screen.dart';
 import 'package:ott102/persentation/view/screens/tab_screen/home_screen.dart';
 import 'package:ott102/persentation/view/screens/tab_screen/profile_screen.dart';
 import 'package:ott102/persentation/view/screens/tab_screen/search_screen.dart';
 import 'package:ott102/persentation/view/screens/tab_screen/upcoming_screen.dart';
+
+import '../../provider/main_tab_provider.dart';
 
 
 class MainTabScreen extends StatefulWidget {
@@ -20,39 +20,30 @@ class MainTabScreen extends StatefulWidget {
 }
 
 class _MainTabScreenState extends State<MainTabScreen> {
-  final mainTabProvider = MainTabProvider(movieRepository: MovieRepository());
-
-  static const List<Widget> pages = [
-    HomeScreen(),
-    UpComingScreen(),
-    DownloadScreen(),
-    SearchScreen(),
-    ProfileScreen(),
-  ];
-
-  int _currentIndex = 0;
-
-  void _onItemTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      mainTabProvider.updateGenreList();
-      mainTabProvider.updateTopRatedMovieList();
-
-      mainTabProvider.addListener(() => setState(() {}));
+      widget.mainTabProvider.updateGenreList();
+      widget.mainTabProvider.updateTopRatedMovieList();
+      widget.mainTabProvider.updateNowPlayingMovieList();
+      widget.mainTabProvider.updateLatesMovieList();
+      widget.mainTabProvider.addListener(() => setState(() {}));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // if (mainTabProvider.genreList.isEmpty) return loadingWidget();
+    final List<Widget> pages = [
+      HomeScreen(mainTabProvider: widget.mainTabProvider),
+      UpComingScreen(),
+      DownloadScreen(),
+      SearchScreen(),
+      ProfileScreen(),
+    ];
+
 
     return SafeArea(
       child: Scaffold(
@@ -74,13 +65,13 @@ class _MainTabScreenState extends State<MainTabScreen> {
                     Expanded(
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: mainTabProvider.genreList.length,
+                        itemCount: widget.mainTabProvider.genreList.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) => Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              mainTabProvider.genreList[index].name,
+                              widget.mainTabProvider.genreList[index].name,
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
@@ -93,12 +84,12 @@ class _MainTabScreenState extends State<MainTabScreen> {
             )
           ],
         ),
-        body: pages[_currentIndex],
+        body: pages[widget.mainTabProvider.currentIndex],
         bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
           child: BottomNavigationBar(
-            onTap: _onItemTap,
-            currentIndex: _currentIndex,
+            onTap: widget.mainTabProvider.changeTabPosition,
+            currentIndex: widget.mainTabProvider.currentIndex,
             backgroundColor: const Color(0xFF232937),
             selectedLabelStyle: const TextStyle(color: Colors.deepOrange),
             selectedItemColor: Colors.deepOrange,

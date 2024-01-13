@@ -4,6 +4,9 @@ import 'package:ott102/data/repository/movie_repository.dart';
 import 'package:ott102/persentation/provider/main_tab_provider.dart';
 import 'package:ott102/persentation/utils.dart';
 
+import '../../../../data/model/upcoming_model.dart';
+import '../loading.dart';
+
 class UpComingScreen extends StatefulWidget {
   const UpComingScreen({super.key});
 
@@ -17,48 +20,61 @@ class _UpComingScreenState extends State<UpComingScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      mainTabProvider.updateUpcomingMovieList();
 
-    mainTabProvider.updateUpcomingMovieList();
-
-    setState(() {});
-    // fetchData();
-  }
-
-  fetchData() async {
-    await Future.wait([
-      mainTabProvider.updateUpcomingMovieList(),
-    ]);
-    setState(() {});
+      mainTabProvider.addListener(() => setState(() {}));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Text('공개 예정 작픔',
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        SizedBox(
-          height: screensize(context).height * 0.3,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 3,
-            itemBuilder: (context, index) => Row(
-              children: [
-                SizedBox(
-                  width: screensize(context).width * 0.33333,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.network(
-                        mainTabProvider.latestMovieList[index].posterPath),
-                  ),
-                ),
-              ],
+    final List<UpcomingModel> upcomingMovieList =
+        mainTabProvider.upcomingMovieList;
+
+    if (upcomingMovieList.isEmpty) return loadingWidget();
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: 5),
+            const Text(
+              '공개 예정 작픔',
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-          ),
-        )
-      ],
+            const SizedBox(height: 15),
+            GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: 210,
+                crossAxisCount: 3,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 18,
+              ),
+              shrinkWrap: true,
+              itemCount: upcomingMovieList.length,
+              itemBuilder: (context, index) => Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.network(
+                    upcomingMovieList[index].posterPath,
+                    height: screensize(context).height * 0.23,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    upcomingMovieList[index].releasceDate,
+                    style: const TextStyle(color: Colors.white),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

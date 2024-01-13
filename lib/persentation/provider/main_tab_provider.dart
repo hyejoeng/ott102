@@ -7,42 +7,45 @@ import '../../data/model/upcoming_model.dart';
 import '../../data/repository/movie_repository.dart';
 
 class MainTabProvider extends ChangeNotifier {
-  final MovieRepository movieRepository;
+  final MovieRepository _movieRepository;
 
-  MainTabProvider({required this.movieRepository});
+  MainTabProvider({required MovieRepository movieRepository}) : _movieRepository = movieRepository;
 
-  late PageController mainTabController;
+  int _currentIndex = 0;
 
-  void changeTabPosition(int index) {
-    mainTabController.jumpToPage(index);
+  int get currentIndex => _currentIndex;
+
+
+  void changeTabPosition(int changeIndex) {
+    _currentIndex = changeIndex;
     notifyListeners();
   }
 
   // 장르 리스트
   List<GenreModel> genreList = [];
   Future<void> updateGenreList() async {
-    genreList = await movieRepository.getGenreList();
+    genreList = await _movieRepository.getGenreList();
     notifyListeners();
   }
 
   // 인기영화
   List<TopRatedModel> topRatedMovieList = [];
   Future<void> updateTopRatedMovieList() async {
-    topRatedMovieList = await movieRepository.getTopRatedMovieList();
+    topRatedMovieList = await _movieRepository.getTopRatedMovieList();
     notifyListeners();
   }
 
   // 방영 중
   List<NowPlayingModel> nowPlayingMovieList = [];
   Future<void> updateNowPlayingMovieList() async {
-    nowPlayingMovieList = await movieRepository.getNowPlayingMovieList();
+    nowPlayingMovieList = await _movieRepository.getNowPlayingMovieList();
     notifyListeners();
   }
 
   // 최근 개봉
   List<NowPlayingModel> latestMovieList = [];
   Future<void> updateLatesMovieList() async {
-    latestMovieList = await movieRepository.getNowPlayingMovieList();
+    latestMovieList = await _movieRepository.getNowPlayingMovieList();
     latestMovieList.sort((a, b) => a.releaseDate.compareTo(b.releaseDate),);
     notifyListeners();
   }
@@ -50,7 +53,7 @@ class MainTabProvider extends ChangeNotifier {
   // 공개 예정
   List<UpcomingModel> upcomingMovieList = [];
   Future<void> updateUpcomingMovieList() async {
-    upcomingMovieList = await movieRepository.getUpcomingMovieList();
+    upcomingMovieList = await _movieRepository.getUpcomingMovieList();
     notifyListeners();
   }
 }
